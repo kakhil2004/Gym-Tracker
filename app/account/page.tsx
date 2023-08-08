@@ -2,29 +2,19 @@
 import { useState } from "react";
 
 
-const DynamicContent = ({ items }) => {
-  return (
-    <div>
-      {items.map((item, index) => (
-        <div key={index}>
-          {item.type === 'text' && <p>{item.content}</p>}
-          {item.type === 'button' && <a href="/log"><button>Start Tracking!</button></a>}
-        </div>
-      ))}
-    </div>
-  );
-};
-
 
 export default function SignUp() {
     const [user, setUserValue] = useState("")
     const [pwd, setPwdValue] = useState("")
     const [samPwd, setSameValue] = useState(true)
-    const [dynamicItems, setDynamic] = useState([])
+    const [error, setErrorMessage] = useState("")
+    const [startTrackingBut, setTrackButVisible] = useState(false)
     //1 = signupMode 2 = signin for first time 0 = regular signin
     const [signup, setSignUp] = useState(1)
     
     function switchMode() {
+      setErrorMessage("")
+      setTrackButVisible(false)
       signup == 1 ? setSignUp(0) : setSignUp(1)
     }
 
@@ -37,14 +27,10 @@ export default function SignUp() {
       .then(response => response.json())
       .then(data => { 
           if (data.success) {
-            setDynamic([
-              {type : "text", content : "Successfully signed in!"},
-              {type : "button"}
-            ])
+            setErrorMessage("Successfully signed in!")
+            setTrackButVisible(true)
           } else {
-            setDynamic([
-              {type : "text", content : data.error}
-            ])
+            setErrorMessage(data.error)
           }
         }
       )
@@ -61,23 +47,22 @@ export default function SignUp() {
           if (data.success) {
             setSignUp(2);
           } else {
-            setDynamic([
-              {type : "text", content : data.error}
-            ])
+            setErrorMessage(data.error)
           }
         })
 
     }
 
     function handler() {
-      if (samPwd) {
-        if (signup === 1) {
-          submit()
-        } 
-      } else if (signup != 1) {
+      console.log("I was clicked")
+      console.log(signup !== 2)
+      if (signup !== 1) {
+        console.log("get user")
         getUser()
-      }
+      } else if (samPwd &&  signup === 1) {
+        submit()
     }
+  }
     
     return (
       <>
@@ -111,7 +96,10 @@ export default function SignUp() {
         {!samPwd && <p>Please make sure it is the same password</p>}
         <button style={{"marginRight" : 30}} onClick={handler}>Submit</button>
         <button onClick={switchMode}>{signup == 1 ? "Go to Login Page Instead" : "Go to Sign Up Page Instead"}</button>
-        <DynamicContent items={dynamicItems} />
+        <br></br>
+        <br></br>
+        {error !== "" && <blockquote style={{"color" : "red"}}>{error}</blockquote>}
+        {startTrackingBut && <a href="/log"><button >Start Tracking!</button></a>}
       </>
     )
   }

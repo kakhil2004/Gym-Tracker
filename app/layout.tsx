@@ -19,6 +19,7 @@ export default function RootLayout({
           <a href="/">Gym Tracker</a>
           <Link href="/account" >Account</Link>
           <Link href="/log" >Log</Link>
+          <Link href="/import" >Import</Link>
           <Link href="/about" >Progress</Link>
           <Link href="/bout" >Graphs</Link>
         </nav>

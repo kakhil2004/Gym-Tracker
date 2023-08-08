@@ -46,6 +46,7 @@ export default function Log() {
         <label>What split were you doing today?</label>
        
         <select onChange={(e) => setSplit(e.target.value)}>
+            <option>Select an option</option>
             <option>Push (Biceps, Back)</option>
             <option>Pull (Triceps, Chest, Shoulders)</option>
             <option>Leg</option>

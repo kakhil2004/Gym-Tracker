@@ -41,7 +41,7 @@ export default async function handler(req, res) {
             } else {
                 res.status(401).json({
                     success : false,
-                    error : "No user found!"
+                    error : "Username/Password wrong or user does not exist!"
                 });
             }
         })

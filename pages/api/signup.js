@@ -16,21 +16,49 @@ async function createUser(username, password) {
     } 
 }
 
+async function findUserName(username) {
+    try {
+      const query = {
+        username: username
+      };
+      return await findDocuments("Users", query)
+      
+    } catch (error) {
+      console.error('Error finding user:', error);
+    } 
+}
+
 
 
 export default async function handler(req, res) {
     if (req.query.user && req.query.pwd) {
-        createUser(req.query.user, req.query.pwd).then(response => {
-            if (response.acknowledged) {
-                res.status(200).json({
-                    success : true
-                });
+        findUserName(req.query.user).then(response => {
+            if (response.length == 0) {
+                createUser(req.query.user, req.query.pwd).then(response => {
+                    insertDocument("Records", {
+                        _id : response.insertedId,
+                        push : {},
+                        pull : {},
+                        leg : {}
+                    })
+                    if (response.acknowledged) {
+                        res.status(200).json({
+                            success : true
+                        });
+                    } else {
+                        res.status(401).json({
+                            success : false
+                        });
+                    }
+                })
             } else {
                 res.status(401).json({
-                    success : false
+                    success : false,
+                    error : "Username is already being used!"
                 });
             }
         })
+        
     } else {
         res.status(404).json({
             success : false
