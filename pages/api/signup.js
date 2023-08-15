@@ -1,12 +1,14 @@
 import { serialize } from "cookie";
 import { insertDocument, findDocuments } from '../../utils/dbOperations';
-
+const { randomBytes, scryptSync } = require("crypto")
 
 async function createUser(username, password) {
     try {
+        const salt = randomBytes(16).toString("hex")
+        const hashedPassword = scryptSync(password, salt, 64).toString("hex")
       const newUser = {
         username: username,
-        secret: password,
+        secret: `${salt}:${hashedPassword}`,
         createdAt: new Date(),
       };
       return await insertDocument("Users", newUser)
@@ -37,9 +39,21 @@ export default async function handler(req, res) {
                 createUser(req.query.user, req.query.pwd).then(response => {
                     insertDocument("Records", {
                         _id : response.insertedId,
-                        push : {},
-                        pull : {},
-                        leg : {}
+                        push : {
+                            "entries" : 0,
+                            "exercises" : [],
+                            "logs" : {}
+                            },
+                        pull : {
+                            "entries" : 0,
+                            "exercises" : [],
+                            "logs" : {}
+                            },
+                        leg : {
+                            "entries" : 0,
+                            "exercises" : [],
+                            "logs" : {}
+                            }
                     })
                     if (response.acknowledged) {
                         res.status(200).json({

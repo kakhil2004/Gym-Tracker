@@ -5,7 +5,6 @@ import Image from 'next/image'
 import Checker from "@/components/checker";
 import copy from 'copy-to-clipboard';
 
-
 // cookie.js
 const getCookie = (key) => {
   const cookies = document.cookie.split('; ');
@@ -31,7 +30,7 @@ export default function Import() {
 
     function copyToClipBoard() {
       setCopied(true)
-      copy("Split Name \n\nWorkout #1 Name\nweight - reps \nweight - reps \n\nWorkout #2 Name \nweight - reps \nweight - reps \nweight - reps \n\nComments:")
+      copy("Split Name \n\nwrkout 1 Name\nw - r\nw - r\n\nwrkout 2 Name\nw - r\nw - r\nw - r\n\n(add more workouts using the above scheme and delete this message)\n\nComments:\nWeight:")
       setTimeout(() => {setCopied(false)}, 3000)
       
     }
@@ -40,9 +39,11 @@ export default function Import() {
       let copy = data.trim().replaceAll("\n\n", "\n").toLowerCase().split("\n")
       console.log(copy)
       let final = {
+        "date" : Date.now(),
         "sp" : "",
         "wos" : [],
-        "cm" : ""
+        "cm" : "",
+        "we" : 0
       }
       let split;
       if (copy[0] === "push" || copy[0] === "pull" || copy[0] === "legs") {
@@ -52,6 +53,8 @@ export default function Import() {
           if (isNaN(Number(curr.charAt(0)))) {
             if (curr.startsWith("comments:")) {
               final.cm = curr.substring(9).trim();
+            } else if(curr.startsWith("weight:")) {
+              final.we = curr.substring(7).trim();
             } else {
               let currWorkout = {
                 "name" : curr,
@@ -97,15 +100,18 @@ export default function Import() {
               <button onClick={copyToClipBoard}>{copyToClip ? "Copied!" : "Click me to copy format"}</button>
               <br></br>
               <br></br>
-              <Image src="/importSchema.png" key="" alt="broke" width="300" height="200"/>
+              <Image src="/importSchema.jpg" key="" alt="broke" width="300" height="200"/>
               <details>
               <summary>Example of this:</summary>
-              <Image src="/importExample.png" key="" alt="broke" width="300" height="200"/>
+              <Image src="/importExample.jpg" key="" alt="broke" width="300" height="200"/>
               </details>
               <br></br>
             </li>
             <li>
-            <p>Copy all the content by clicking Share &#8594; Copy</p>
+            <p>Using the schema, record your exercises at the gym! </p>
+            </li>
+            <li>
+            <p>In the notes app, click the Share Icon &#8594; Copy </p>
             </li>
             <li>
             <p>Paste the content below!</p>
@@ -115,11 +121,12 @@ export default function Import() {
         </details>
         <br></br>
         <label>Paste Content here!</label>
-       
         <textarea style={{height : 300}} onChange={(e) => setData(e.target.value)}>
         </textarea>
-        <button onClick={saveData}>Submit Data!</button>
+        <button onClick={saveData}>Submit Data For Confirmation!</button>
         {cleanData && <Checker data={cleanData}/>}
+        
+
         </>
         :
         <>

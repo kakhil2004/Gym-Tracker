@@ -20,8 +20,7 @@ export default function RootLayout({
           <Link href="/account" >Account</Link>
           <Link href="/log" >Log</Link>
           <Link href="/import" >Import</Link>
-          <Link href="/about" >Progress</Link>
-          <Link href="/bout" >Graphs</Link>
+          <Link href="/visual" >Visualize</Link>
         </nav>
         {children}
         </body>
