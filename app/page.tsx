@@ -11,6 +11,8 @@ export default function Home() {
   return (
     <main>
       <h1>Welcome to the Gym Tracker!</h1>
+      <h5>Disclaimer</h5>
+      <p>This is still needs a lot of work, so <b>PLEASE</b> do not use sensitive information. I am not liable for any data breachs</p>
       <h5>Quick Start</h5>
       <ul>
         <li>Click Account at the top to sign up</li>

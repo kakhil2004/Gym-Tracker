@@ -7,6 +7,7 @@ export default function SignUp() {
     const [user, setUserValue] = useState("")
     const [pwd, setPwdValue] = useState("")
     const [samPwd, setSameValue] = useState(true)
+    const [tooShort, setShortValue] = useState(false)
     const [error, setErrorMessage] = useState("")
     const [startTrackingBut, setTrackButVisible] = useState(false)
     //1 = signupMode 2 = signin for first time 0 = regular signin
@@ -27,7 +28,6 @@ export default function SignUp() {
       .then(response => response.json())
       .then(data => { 
           if (data.success) {
-            setErrorMessage("Successfully signed in!")
             setTrackButVisible(true)
           } else {
             setErrorMessage(data.error)
@@ -54,13 +54,15 @@ export default function SignUp() {
     }
 
     function handler() {
-      console.log("I was clicked")
-      console.log(signup !== 2)
       if (signup !== 1) {
-        console.log("get user")
         getUser()
       } else if (samPwd &&  signup === 1) {
-        submit()
+        if (pwd.length != 0) {
+          submit()
+        } else {
+          setErrorMessage("You need a password")
+        }
+        
     }
   }
     
@@ -80,8 +82,16 @@ export default function SignUp() {
         </label>
         <label>
             Password:
-            <input type="password" onChange={(e) => setPwdValue(e.target.value)} />
+            <input type="password" onChange={(e) => {
+              if (pwd.length < 9) {
+                setShortValue(true)
+              } else {
+                setShortValue(false)
+              }
+              setPwdValue(e.target.value)
+              }} />
         </label>
+        {(tooShort && signup == 1) && <p>Password needs to be at least 10 characters</p>}
         {signup === 1 && <label>
             Re-enter password:
             <input type="password" onChange={(e) => {
@@ -99,7 +109,7 @@ export default function SignUp() {
         <br></br>
         <br></br>
         {error !== "" && <blockquote style={{"color" : "red"}}>{error}</blockquote>}
-        {startTrackingBut && <a href="/log"><button >Start Tracking!</button></a>}
+        {startTrackingBut && <><blockquote style={{"color" : "green"}}>Successfully Signed In!</blockquote><a href="/log"><button >Start Tracking!</button></a></>}
       </>
     )
   }

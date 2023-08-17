@@ -27,12 +27,12 @@ export default function Log() {
 
     const chartData = {
       labels: [
-        'Red',
-        'Blue',
-        'Yellow'
+        'Split',
+        'Push',
+        'Pull'
       ],
       datasets: [{
-        label: 'My First Dataset',
+        label: '',
         data: [300, 50, 100],
         backgroundColor: [
           'rgb(255, 99, 132)',
